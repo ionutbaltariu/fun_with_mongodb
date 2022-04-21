@@ -1,10 +1,12 @@
 from mongo_handler import MongoHandler
 from datetime import datetime
+from faker import Faker
+from fake_data_gen import get_fake_users, get_fake_comments
 
 handler = MongoHandler("ecbd")
 user_collection = handler.get_collection("users")
 channel_collection = handler.get_collection("channels")
-
+comment_collection = handler.get_collection("comments")
 
 def create_channels():
     channel_collection.insert_many([
@@ -163,19 +165,14 @@ def create_channels():
     ])
 
 
-def get_object_id_for_channel(channel: str):
-    return channel_collection.find({"name": channel}).limit(1)
+faker = Faker()
 
+create_channels()
 
-print([x for x in get_object_id_for_channel("#hr-iasi")])
+channel_ids = [x["_id"] for x in channel_collection.find({})]
+user_collection.insert_many(get_fake_users(channel_ids, 500))
 
-#
-# user_collection.insert_many([{
-#     "first_name": "Ionut",
-#     "last_name": "Baltariu",
-#     "user_name": "xeno-john",
-#     "email": "saltyjohn31@gmail.com",
-#     "registration_date": datetime(year=2021, month=5, day=20, hour=14, minute=30, second=49).replace(microsecond=0)
-# }])
+users = [x for x in user_collection.find({})]
+channels = [x for x in channel_collection.find({})]
 
-print([x for x in user_collection.find({})])
+comment_collection.insert_many(get_fake_comments(channels, users))

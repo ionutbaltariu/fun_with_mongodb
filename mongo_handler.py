@@ -1,16 +1,15 @@
 from pymongo.collection import Collection
 from pymongo import MongoClient
-from config import MONGO_CONN_URI
 
 
 class MongoHandler:
     def __init__(self, database: str, connection_retries=3):
-        self.connection = MongoClient(MONGO_CONN_URI)
+        self.connection = MongoClient("mongodb://root:example@localhost:27017")
         self.database = self.connection[database]
         connection_ok_flag = True if self.database.command('ping')['ok'] == 1.0 else False
 
         while connection_retries > 0 and connection_ok_flag is False:
-            self.connection = MongoClient(MONGO_CONN_URI)
+            self.connection = MongoClient("mongodb://root:example@localhost:27017")
             connection_ok_flag = True if self.database.command('ping')['ok'] == 1.0 else False
             connection_retries -= 1
 
