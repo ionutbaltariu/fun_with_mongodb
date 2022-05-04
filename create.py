@@ -1,3 +1,5 @@
+from pymongo import TEXT
+
 from mongo_handler import MongoHandler
 from datetime import datetime
 from faker import Faker
@@ -7,6 +9,7 @@ handler = MongoHandler("ecbd")
 user_collection = handler.get_collection("users")
 channel_collection = handler.get_collection("channels")
 comment_collection = handler.get_collection("comments")
+
 
 def create_channels():
     channel_collection.insert_many([
@@ -176,3 +179,5 @@ users = [x for x in user_collection.find({})]
 channels = [x for x in channel_collection.find({})]
 
 comment_collection.insert_many(get_fake_comments(channels, users))
+
+user_collection.create_index([('ex_jobs.name', TEXT), ('first_name', TEXT)])
