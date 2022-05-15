@@ -74,11 +74,14 @@ print(list(comment_collection.find({})
                              .limit(100)))
 
 # angajatii care au avut functia de: Proiectant Sisteme De Securitate
-# print_output_separator()
-# print(list(user_collection.find(
-#     {
-#         "$text": {"$search": "Proiectant Sisteme De Securitate"}
-#     },
-#     {"first_name": 1, "last_name": 1}
-# )))
+print_output_separator()
+print(list(user_collection.find(
+    {
+        "ex_jobs.name": {"$regex": "Sisteme De Securitate"}
+    },
+    {
+        "first_name": 1,
+        "last_name": 1
+    }
+)))
 
