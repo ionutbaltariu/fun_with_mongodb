@@ -22,6 +22,9 @@ var __3tsoftwarelabs_reduce = function (key, values) {
 
 // Variable for finalize
 var __3tsoftwarelabs_finalize = function (key, reducedValue) {
+    if(reducedValue >= 500){
+        return 10;
+    }
     return reducedValue * 10 / 500;
 }
 ;
@@ -35,8 +38,3 @@ db.runCommand({
     query: { },
     inputDB: "ecbd",
  });
-
-// un scor care reprezinta cati utilizatori sunt abonati la un canal anume
-// 10 -> 500 useri (hardcodat)
-// 0 -> 0 useri
-// fara finalize era o numarare a utilizatorilor abonati la fiecare canal
