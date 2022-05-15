@@ -44,7 +44,7 @@ def get_fake_users(channel_ids, number: int = 100):
         } for _ in range(0, random.randint(1, 6))
         ],
         "current_job": {
-            "name:": fake.job(),
+            "name": fake.job(),
             "years_of_experience": random.randint(0, 7)
         },
         "personal_information": {

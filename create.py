@@ -1,11 +1,168 @@
+from datetime import datetime
+
+from faker import Faker
 from pymongo import TEXT
 
-from mongo_handler import MongoHandler
-from datetime import datetime
-from faker import Faker
 from fake_data_gen import get_fake_users, get_fake_comments
+from mongo_handler import MongoHandler
 
 handler = MongoHandler("ecbd")
+
+handler.database.create_collection("users")
+
+handler.database.command('collMod', 'users', validator={
+    "$jsonSchema": {
+        "bsonType": "object",
+        "required": ["first_name", "last_name", "user_name", "email", "ex_jobs",
+                     "current_job", "registration_date",
+                     "personal_information", "channels"],
+        "properties": {
+            "first_name": {
+                "bsonType": "string",
+                "description": "must be a string and is required"
+            },
+            "last_name": {
+                "bsonType": "string",
+                "description": "must be a string and is required"
+            },
+            "user_name": {
+                "bsonType": "string",
+                "description": "must be a string and is required"
+            },
+            "email": {
+                "bsonType": "string",
+                "description": "must be a string and is required"
+            },
+            "registration_date": {
+                "bsonType": "date",
+                "description": "must be a date and is required"
+            },
+            "ex_jobs": {
+                "bsonType": "array",
+                "items": {
+                    "bsonType": "object",
+                    "required": ["name", "company"],
+                    "properties": {
+                        "name": {
+                            "bsonType": "string",
+                            "description": "must be a string and is required"
+                        },
+                        "company": {
+                            "bsonType": "string",
+                            "description": "must be a string and is required"
+                        }
+                    }
+                },
+                "description": "must be a array of objects containing name and company"
+            },
+            "current_job": {
+                "bsonType": "object",
+                "required": ["name", "years_of_experience"],
+                "properties": {
+                    "relationship_status": {
+                        "bsonType": "string",
+                        "description": "must be a string and is required"
+                    },
+                    "years_of_experience": {
+                        "bsonType": "int",
+                        "description": "must be an int and is required"
+                    }
+                }
+            },
+            "personal_information": {
+                "bsonType": "object",
+                "required": ["relationship_status", "zodiac", "favorite_food"],
+                "properties": {
+                    "relationship_status": {
+                        "bsonType": "string",
+                        "description": "must be a string and is required"
+                    },
+                    "zodiac": {
+                        "bsonType": "string",
+                        "description": "must be a string and is required"
+                    },
+                    "favorite_food": {
+                        "bsonType": "string",
+                        "description": "must be a string and is required"
+                    }
+                }
+            },
+            "channels": {
+                "bsonType": "array",
+                "items": {
+                    "bsonType": "objectId",
+                },
+                "description": "must be a array of objectid's"
+            }
+        }
+    }
+})
+
+handler.database.create_collection("channels")
+
+handler.database.command('collMod', 'channels', validator={
+    "$jsonSchema": {
+        "bsonType": "object",
+        "required": ["name", "type", "meta", "creation_date"],
+        "properties": {
+            "name": {
+                "bsonType": "string",
+                "description": "must be a string and is required"
+            },
+            "type": {
+                "bsonType": "string",
+                "description": "must be a string and is required"
+            },
+            "creation_date": {
+                "bsonType": "date",
+                "description": "must be a date and is required"
+            },
+            "meta": {
+                "bsonType": "object",
+                "required": ["archived"],
+                "properties": {
+                    "archived": {
+                        "bsonType": "bool",
+                        "description": "must be a boolean and is required"
+                    }
+                }
+            }
+        }
+    }
+})
+
+handler.database.create_collection("comments")
+
+handler.database.command('collMod', 'comments', validator={
+    "$jsonSchema": {
+        "bsonType": "object",
+        "required": ["value", "channel", "user", "likes", "sent_at"],
+        "properties": {
+            "value": {
+                "bsonType": "string",
+                "description": "must be a string and is required"
+            },
+            "channel": {
+                "bsonType": "objectId",
+                "description": "must be a objectid and is required"
+            },
+            "user": {
+                "bsonType": "objectId",
+                "description": "must be a objectid and is required"
+            },
+            "sent_at": {
+                "bsonType": "date",
+                "description": "must be a date and is required"
+            },
+            "likes": {
+                "bsonType": "int",
+                "description": "must be an int and is required"
+            }
+        }
+    }
+})
+
+
 user_collection = handler.get_collection("users")
 channel_collection = handler.get_collection("channels")
 comment_collection = handler.get_collection("comments")
